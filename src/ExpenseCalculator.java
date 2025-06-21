@@ -3,14 +3,12 @@ public class ExpenseCalculator implements Expenser {
 
 	@Override
 	public void addExpense(Expense Ex) {
-		// TODO Auto-generated method stub
-		
+		EWalletApp.currentUser.addExpense(Ex);
 	}
 
 	@Override
 	public void addMonthlyIncome(Wage W) {
-		// TODO Auto-generated method stub
-		
+		EWalletApp.currentUser.addIncome(W);
 	}
 
 	@Override
