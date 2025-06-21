@@ -12,31 +12,31 @@ public class ExpenseCalculator implements Expenser {
 	}
 
 	@Override
-	public void PrintFullreport() {
+	public void printFullReport() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void PrintExpensereport() {
+	public void printExpenseReport() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void PrintIncomereport() {
+	public void printIncomeReport() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void PrintIncomereportbyTpe() {
+	public void printIncomeReportByType() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void PrintExpensebyType() {
+	public void printExpenseByType() {
 		// TODO Auto-generated method stub
 		
 	}
