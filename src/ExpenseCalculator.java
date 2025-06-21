@@ -3,12 +3,12 @@ public class ExpenseCalculator implements Expenser {
 
 	@Override
 	public void addExpense(Expense Ex) {
-		EWalletApp.currentUser.addExpense(Ex);
+		userAtHand.addExpense(Ex);
 	}
 
 	@Override
 	public void addMonthlyIncome(Wage W) {
-		EWalletApp.currentUser.addIncome(W);
+		userAtHand.addIncome(W);
 	}
 
 	@Override
