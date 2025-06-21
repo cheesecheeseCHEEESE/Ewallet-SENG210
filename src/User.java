@@ -17,8 +17,18 @@ public class User {
 	public void addExpense(Expense Ex) {
 		spending.add(Ex);
 	}
+	
 	public void addIncome(Wage W) {
 		income.add(W);
+	}
+	
+	
+	public ArrayList<Wage> getIncome() {
+		return income;
+	}
+	
+	public ArrayList<Expense> getSpending() {
+		return spending;
 	}
 	
 }

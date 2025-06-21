@@ -73,7 +73,27 @@ public class ExpenseCalculator implements Expenser {
 
 	@Override
 	public void updateMonthlySavings() {
-		// TODO Auto-generated method stub
+		
+		// Initialize calculators
+		int totalMonthlyIncome = 0;
+		int totalMonthlySpending = 0;
+
+		// Calculate total monthly income (can replace this with user.balance later)
+		for (Wage incomeSource : userAtHand.getIncome()) {
+			totalMonthlyIncome += incomeSource.amount;
+		}
+		
+		// Calculate total monthly spending
+		for (Expense expense : userAtHand.getSpending()) {
+			totalMonthlySpending += expense.amount;
+		}
+		
+		// Calculate total monthly savings
+		int totalMonthlySavings = totalMonthlyIncome - totalMonthlySpending;
+		
+		// Updates user variables
+		userAtHand.balance = totalMonthlyIncome;
+		userAtHand.monthlySavings = totalMonthlySavings;
 		
 	}
 
