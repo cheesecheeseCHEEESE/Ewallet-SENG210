@@ -49,8 +49,9 @@ public class ExpenseCalculator implements Expenser {
 
 	@Override
 	public Currency convertForeignCurrency(Currency C, double amount) {
-		// TODO Auto-generated method stub
-		return null;
+    		double exchangeRate = C.getRate();
+    		double convertedAmount = amount * exchangeRate;
+    			return new Currency(C.getName(), convertedAmount, exchangeRate);
 	}
 
 	@Override
