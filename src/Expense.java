@@ -1,7 +1,26 @@
-//adding a comment for testing - 
 public class Expense {
-	String source;
-	double amount;
-	int yearlyFrequency; //1 for 1 time or once a year, 12 for monthly or or 24 for biweekly
-	//should add contructor(s)
+    private String category;
+    private double amount;
+
+    public Expense(String category, double amount) {
+        this.category = category;
+        this.amount = amount;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
 }
+
