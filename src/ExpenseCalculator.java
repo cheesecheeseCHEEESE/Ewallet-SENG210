@@ -51,7 +51,7 @@ public class ExpenseCalculator implements Expenser {
 	public Currency convertForeignCurrency(Currency C, double amount) {
     		double exchangeRate = C.getRate();
     		double convertedAmount = amount * exchangeRate;
-    			return new Currency(C.getName(), convertedAmount, exchangeRate);
+    		return new Currency(C.getName(), convertedAmount, exchangeRate);
 	}
 
 	@Override
@@ -81,12 +81,12 @@ public class ExpenseCalculator implements Expenser {
 
 		// Calculate total monthly income (can replace this with user.balance later)
 		for (Wage incomeSource : userAtHand.getIncome()) {
-			totalMonthlyIncome += incomeSource.amount;
+			totalMonthlyIncome += incomeSource.getAmount();
 		}
 		
 		// Calculate total monthly spending
 		for (Expense expense : userAtHand.getSpending()) {
-			totalMonthlySpending += expense.amount;
+			totalMonthlySpending += expense.getAmount();
 		}
 		
 		// Calculate total monthly savings
