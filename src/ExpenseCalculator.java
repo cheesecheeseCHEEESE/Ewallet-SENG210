@@ -1,8 +1,16 @@
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -25,22 +33,60 @@ public class ExpenseCalculator implements Expenser {
 		JFrame frame = new JFrame("Full Report");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(300, 300);
-		frame.setLayout(new FlowLayout());
+		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.setVisible(true);
 		
-		JLabel reportLabel = new JLabel("Full report for " + userAtHand.username + ":");
+		JPanel center = new JPanel();
+		center.setLayout(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
 		
-		frame.add(reportLabel);
+		
+		JLabel reportLabel = new JLabel("Full report for " + userAtHand.username + ":");
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		center.add(reportLabel, constraints);
 		
 		JLabel incomeLabel = new JLabel("Income: ");
-		frame.add(incomeLabel);
+		constraints.gridy = 1;
+		center.add(incomeLabel, constraints);
 		
-		generateIncomeTable(frame);
+		constraints.gridy = 2;
+		center.add(generateIncomeTable(), constraints);
 		
 		JLabel expenseLabel = new JLabel("Expenses: ");
-		frame.add(expenseLabel);
+		constraints.gridy = 3;
+		center.add(expenseLabel, constraints);
 		
-		generateExpenseTable(frame);
+		constraints.gridy = 4;
+		center.add(generateExpenseTable(), constraints);
+		
+		JPanel buttons = new JPanel();
+		buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+		constraints.gridy = 5;
+		center.add(buttons, constraints);
+		
+		JButton exportReport = new JButton("Export");
+		buttons.add(exportReport);
+		
+		JButton closeButton = new JButton("Close");
+		buttons.add(closeButton);
+
+		ActionListener buttonActions = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == closeButton) {
+					frame.dispose();
+				}
+				if (e.getSource() == exportReport) {
+					exportReport("Full Report");
+				}
+			}
+		};
+		
+		exportReport.addActionListener(buttonActions);
+		closeButton.addActionListener(buttonActions);
+		
+		frame.add(center);
 		   
 		frame.pack();
 		
@@ -50,10 +96,59 @@ public class ExpenseCalculator implements Expenser {
 	@Override
 	public void printExpenseReport() {
 		JFrame frame = new JFrame("Expense Report");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(300, 300);
+		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.setVisible(true);
+		
+		JPanel center = new JPanel();
+		center.setLayout(new GridBagLayout());
+		frame.add(center);
+		GridBagConstraints constraints = new GridBagConstraints();
+		
+		JLabel expenseLabel = new JLabel("Expense Report for " + userAtHand.username + ":");
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		center.add(expenseLabel, constraints);
+		
+		constraints.gridy = 1;
+		center.add(generateExpenseTable(), constraints);
+		
+		JPanel buttons = new JPanel();
+		buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+		constraints.gridy = 2;
+		center.add(buttons, constraints);
+		
+		JButton exportReport = new JButton("Export");
+		buttons.add(exportReport);
+		
+		JButton filterButton = new JButton("Filter");
+		buttons.add(filterButton);
+		
+		JButton closeButton = new JButton("Close");
+		buttons.add(closeButton);
+
+		ActionListener buttonActions = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == closeButton) {
+					frame.dispose();
+				}
+				if (e.getSource() == filterButton) {
+					printExpenseByType();
+				}
+				if (e.getSource() == exportReport) {
+					exportReport("Expense Report");
+				}
+			}
+		};
+		
+		exportReport.addActionListener(buttonActions);
+		filterButton.addActionListener(buttonActions);
+		closeButton.addActionListener(buttonActions);
 	}
 	
-	public void generateExpenseTable(JFrame frame) {
+	public JScrollPane generateExpenseTable() {
 		String[] expenseTableColumnNames = {
 				"Category",
 				"Amount",
@@ -62,7 +157,7 @@ public class ExpenseCalculator implements Expenser {
 		
 		ArrayList<String[]> expenseTableDataArrayList = new ArrayList<String[]>();
 		
-		// Reads data from the current user's income and adds to array
+		// Reads data from the current user's expenses and adds to array
 		for (Expense expense : userAtHand.getSpending()) {
 			String[] row = new String[3];
 			row[0] = expense.getCategory();
@@ -95,20 +190,72 @@ public class ExpenseCalculator implements Expenser {
 		
 		String[][] expenseTableData = expenseTableDataArrayList.toArray(new String[0][0]);
 		
-		JTable incomeTable = new JTable(new ReportTableModel(expenseTableData, expenseTableColumnNames));
+		JTable expenseTable = new JTable(new ReportTableModel(expenseTableData, expenseTableColumnNames));
 		
-		JScrollPane incomeScrollPane = new JScrollPane(incomeTable);
-		frame.add(incomeScrollPane);
+		JScrollPane tablePane = new JScrollPane(expenseTable);
+		
+		tablePane.setPreferredSize(new Dimension(300, 100));
+				
+		return tablePane;
 	}
 
 	@Override
 	public void printIncomeReport() {
 		JFrame frame = new JFrame("Income Report");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(300, 300);
+		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.setVisible(true);
+		
+		JPanel center = new JPanel();
+		center.setLayout(new GridBagLayout());
+		frame.add(center);
+		GridBagConstraints constraints = new GridBagConstraints();
+		
+		JLabel incomeLabel = new JLabel("Income Report for " + userAtHand.username + ":");
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		center.add(incomeLabel, constraints);
+		
+		constraints.gridy = 1;
+		center.add(generateIncomeTable(), constraints);
+		
+		JPanel buttons = new JPanel();
+		buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+		constraints.gridy = 2;
+		center.add(buttons, constraints);
+		
+		JButton exportReport = new JButton("Export");
+		buttons.add(exportReport);
+		
+		JButton filterButton = new JButton("Filter");
+		buttons.add(filterButton);
+		
+		JButton closeButton = new JButton("Close");
+		buttons.add(closeButton);
+
+		ActionListener buttonActions = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == closeButton) {
+					frame.dispose();
+				}
+				if (e.getSource() == filterButton) {
+					printIncomeReportByType();
+				}
+				if (e.getSource() == exportReport) {
+					exportReport("Income Report");
+				}
+			}
+		};
+		
+		exportReport.addActionListener(buttonActions);
+		filterButton.addActionListener(buttonActions);
+		closeButton.addActionListener(buttonActions);
 	}
 	
-	// This version adds the income report as a component to a JFrame
-	public void generateIncomeTable(JFrame frame) {
+	// This method adds the income report as a component to a JFrame
+	public JScrollPane generateIncomeTable() {
 		
 		String[] incomeTableColumnNames = {
 				"Source",
@@ -130,10 +277,12 @@ public class ExpenseCalculator implements Expenser {
 		String[][] incomeTableData = incomeTableDataArrayList.toArray(new String[0][0]);
 		
 		JTable incomeTable = new JTable(new ReportTableModel(incomeTableData, incomeTableColumnNames));
+		 
+		JScrollPane tablePane = new JScrollPane(incomeTable);
 		
-		JScrollPane incomeScrollPane = new JScrollPane(incomeTable);
-		frame.add(incomeScrollPane);
-		
+		tablePane.setPreferredSize(new Dimension(300, 100));
+				
+		return tablePane;
 	}
 
 	@Override
@@ -150,7 +299,12 @@ public class ExpenseCalculator implements Expenser {
 
 	@Override
 	public void exportReport(String reportTitle) {
-		// TODO Auto-generated method stub
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int returnVal = fileChooser.showSaveDialog(null);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+		       System.out.println(fileChooser.getSelectedFile());
+		}
 		
 	}
 
