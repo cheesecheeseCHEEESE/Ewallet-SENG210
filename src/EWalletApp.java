@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 
 
 public class EWalletApp {
+	
 	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface 
 	private ArrayList<User> allData;
 	
@@ -52,7 +53,7 @@ public class EWalletApp {
 	
 	
 	// Used to select what kind of report to display (call this when the generate report button is 
-	// clicked
+	// clicked)
 	private static void selectReport() {
 		
 		// Initial frame settings
@@ -115,7 +116,15 @@ public class EWalletApp {
 
 	public static void main(String[] args)
 	{
+		ExpenseCalculator.userAtHand = new User("Test User", "Password1");
+		ExpenseCalculator.userAtHand.addIncome(new Wage("Walmart", 400.0, "May"));
+		ExpenseCalculator.userAtHand.addIncome(new Wage("Erbert and Gerbert's", 500.0, "May"));
+		ExpenseCalculator.userAtHand.addIncome(new Wage("Side hustle", 10.0, "May"));
+		ExpenseCalculator.userAtHand.addExpense(new Expense("Shopping", 40.0, 1));
+		ExpenseCalculator.userAtHand.addExpense(new Expense("Subscription", 12.0, 12));
+		ExpenseCalculator.userAtHand.addExpense(new Expense("Groceries", 100.0, 24));
 		InitalizeJFrame();
+		selectReport();
 	}
 
 }

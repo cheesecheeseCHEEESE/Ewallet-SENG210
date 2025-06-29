@@ -1,5 +1,14 @@
+import java.awt.FlowLayout;
+import java.util.ArrayList;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class ExpenseCalculator implements Expenser {
+	
+	public static User userAtHand = null;
 
 	@Override
 	public void addExpense(Expense Ex) {
@@ -13,19 +22,117 @@ public class ExpenseCalculator implements Expenser {
 
 	@Override
 	public void printFullReport() {
-		// TODO Auto-generated method stub
+		JFrame frame = new JFrame("Full Report");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(300, 300);
+		frame.setLayout(new FlowLayout());
+		frame.setVisible(true);
+		
+		JLabel reportLabel = new JLabel("Full report for " + userAtHand.username + ":");
+		
+		frame.add(reportLabel);
+		
+		JLabel incomeLabel = new JLabel("Income: ");
+		frame.add(incomeLabel);
+		
+		generateIncomeTable(frame);
+		
+		JLabel expenseLabel = new JLabel("Expenses: ");
+		frame.add(expenseLabel);
+		
+		generateExpenseTable(frame);
+		   
+		frame.pack();
+		
 		
 	}
 
 	@Override
 	public void printExpenseReport() {
-		// TODO Auto-generated method stub
+		JFrame frame = new JFrame("Expense Report");
+		frame.setVisible(true);
+	}
+	
+	public void generateExpenseTable(JFrame frame) {
+		String[] expenseTableColumnNames = {
+				"Category",
+				"Amount",
+				"Frequency"
+		};
 		
+		ArrayList<String[]> expenseTableDataArrayList = new ArrayList<String[]>();
+		
+		// Reads data from the current user's income and adds to array
+		for (Expense expense : userAtHand.getSpending()) {
+			String[] row = new String[3];
+			row[0] = expense.getCategory();
+			row[1] = "$" + Double.toString(expense.getAmount());
+
+			switch (expense.getYearlyFrequency()) {
+			
+			case 1:
+				row[2] = "Yearly";
+				break;
+				
+			case 12:
+				row[2] = "Monthly";
+				break;
+				
+			case 24:
+				row[2] = "Biweekly";
+				break;
+				
+			case 52:
+				row[2] = "Weekly";
+				break;
+				
+			default:
+				row[2] = Integer.toString(expense.getYearlyFrequency()) + " times / year";
+				break;
+			}
+			expenseTableDataArrayList.add(row);
+		}
+		
+		String[][] expenseTableData = expenseTableDataArrayList.toArray(new String[0][0]);
+		
+		JTable incomeTable = new JTable(new ReportTableModel(expenseTableData, expenseTableColumnNames));
+		
+		JScrollPane incomeScrollPane = new JScrollPane(incomeTable);
+		frame.add(incomeScrollPane);
 	}
 
 	@Override
 	public void printIncomeReport() {
-		// TODO Auto-generated method stub
+		JFrame frame = new JFrame("Income Report");
+		frame.setVisible(true);
+	}
+	
+	// This version adds the income report as a component to a JFrame
+	public void generateIncomeTable(JFrame frame) {
+		
+		String[] incomeTableColumnNames = {
+				"Source",
+				"Amount",
+				"Month"
+		};
+		
+		ArrayList<String[]> incomeTableDataArrayList = new ArrayList<String[]>();
+		
+		// Reads data from the current user's income and adds to array
+		for (Wage incomeSource : userAtHand.getIncome()) {
+			String[] row = new String[3];
+			row[0] = incomeSource.getSource();
+			row[1] = "$" + Double.toString(incomeSource.getAmount());
+			row[2] = incomeSource.getMonth();
+			incomeTableDataArrayList.add(row);
+		}
+		
+		String[][] incomeTableData = incomeTableDataArrayList.toArray(new String[0][0]);
+		
+		JTable incomeTable = new JTable(new ReportTableModel(incomeTableData, incomeTableColumnNames));
+		
+		JScrollPane incomeScrollPane = new JScrollPane(incomeTable);
+		frame.add(incomeScrollPane);
 		
 	}
 
