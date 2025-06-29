@@ -18,7 +18,7 @@ public class EWalletApp {
 	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface 
 	private ArrayList<User> allData;
 	
-	private ExpenseCalculator expenseCalculator = new ExpenseCalculator();
+	private static ExpenseCalculator expenseCalculator = new ExpenseCalculator();
 	
 	public void createUser(String username, String password) {
 		
@@ -87,17 +87,17 @@ public class EWalletApp {
 
 				case "Full Report":
 					frame.dispose();
-					showFullReport();
+					expenseCalculator.printFullReport();
 					break;
 
 				case "Income Report":
 					frame.dispose();
-					showIncomeReport();
+					expenseCalculator.printIncomeReport();
 					break;
 
 				case "Expense Report":
 					frame.dispose();
-					showExpenseReport();
+					expenseCalculator.printExpenseReport();
 					break;
 				}
 
@@ -112,21 +112,6 @@ public class EWalletApp {
 		
 	}
 	
-	
-	protected static void showExpenseReport() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	protected static void showIncomeReport() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	protected static void showFullReport() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public static void main(String[] args)
 	{
