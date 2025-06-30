@@ -32,7 +32,7 @@ public class EWalletApp {
 	
 	private static void InitalizeJFrame() //called to create the GUI
 	{
-		//Inital JFrame stuff
+		// Inital JFrame stuff
 		JFrame jframe = new JFrame();
 		jframe.setTitle("E-Wallet App");
 		jframe.setDefaultCloseOperation(jframe.EXIT_ON_CLOSE);
@@ -113,9 +113,7 @@ public class EWalletApp {
 		
 	}
 	
-
-	public static void main(String[] args)
-	{
+	private static void createTestUser() {
 		ExpenseCalculator.userAtHand = new User("Test User", "Password1");
 		ExpenseCalculator.userAtHand.addIncome(new Wage("Walmart", 400.0, "May"));
 		ExpenseCalculator.userAtHand.addIncome(new Wage("Erbert and Gerbert's", 500.0, "May"));
@@ -123,7 +121,15 @@ public class EWalletApp {
 		ExpenseCalculator.userAtHand.addExpense(new Expense("Shopping", 40.0, 1));
 		ExpenseCalculator.userAtHand.addExpense(new Expense("Subscription", 12.0, 12));
 		ExpenseCalculator.userAtHand.addExpense(new Expense("Groceries", 100.0, 24));
+	}
+	
+
+	public static void main(String[] args)
+	{
 		InitalizeJFrame();
+		
+		// Here for debugging purposes
+		createTestUser();
 		selectReport();
 	}
 
