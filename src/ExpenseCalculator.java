@@ -155,7 +155,7 @@ public class ExpenseCalculator implements Expenser {
 		closeButton.addActionListener(buttonActions);
 	}
 	
-	public JScrollPane generateExpenseTable() {
+	private JScrollPane generateExpenseTable() {
 		String[] expenseTableColumnNames = {
 				"Category",
 				"Amount",
@@ -263,7 +263,7 @@ public class ExpenseCalculator implements Expenser {
 	}
 	
 	// This method adds the income report as a component to a JFrame
-	public JScrollPane generateIncomeTable() {
+	private JScrollPane generateIncomeTable() {
 		
 		String[] incomeTableColumnNames = {
 				"Source",
@@ -310,7 +310,9 @@ public class ExpenseCalculator implements Expenser {
 		ArrayList<String> incomeTypes = new ArrayList<String>();
 		
 		for (Wage wage : userAtHand.getIncome()) {
-			incomeTypes.add(wage.getSource());
+			if (!incomeTypes.contains(wage.getSource())) {
+				incomeTypes.add(wage.getSource());
+			}
 		}
 		
 		JComboBox<String> dropDownBox = new JComboBox<String>(incomeTypes.toArray(new String[0]));
@@ -382,7 +384,7 @@ public class ExpenseCalculator implements Expenser {
 		
 	}
 	
-	public JScrollPane generateFilteredIncomeTable(String selectedIncomeSource) {
+	private JScrollPane generateFilteredIncomeTable(String selectedIncomeSource) {
 		
 		String[] incomeTableColumnNames = {
 				"Source",
@@ -420,92 +422,94 @@ public class ExpenseCalculator implements Expenser {
 	@Override
 	public void printExpenseByType() {
 		// Initial frame settings
-				JFrame frame = new JFrame("Select Report Type:");
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setSize(new Dimension(400, 175));
-				frame.setLayout(new FlowLayout(FlowLayout.CENTER));
+		JFrame frame = new JFrame("Select Report Type:");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(new Dimension(400, 175));
+		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-				// Invisible panel meant to keep the rest of the components centered
-				JPanel center = new JPanel();
+		// Invisible panel meant to keep the rest of the components centered
+		JPanel center = new JPanel();
+		center.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		ArrayList<String> incomeTypes = new ArrayList<String>();
+
+		for (Expense expense : userAtHand.getSpending()) {
+			if (!incomeTypes.contains(expense.getCategory())) {
+				incomeTypes.add(expense.getCategory());
+			}
+		}
+
+		JComboBox<String> dropDownBox = new JComboBox<String>(incomeTypes.toArray(new String[0]));
+		dropDownBox.setPreferredSize(new Dimension(250, 50));
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(10, 0, 10, 0);
+		center.add(dropDownBox, gbc);
+
+		// Select button and action listener
+		JButton selectButton = new JButton("Generate Report");
+		selectButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				frame.getContentPane().removeAll();
+				frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER));
+				frame.getContentPane().add(center);
+				center.removeAll();
 				center.setLayout(new GridBagLayout());
-				GridBagConstraints gbc = new GridBagConstraints();
+				GridBagConstraints constraints = new GridBagConstraints();
+				constraints.gridx = 0;
+				constraints.gridy = 0;
+				center.add(generateFilteredExpenseTable((String) dropDownBox.getSelectedItem()), constraints);
+				JPanel buttons = new JPanel();
+				buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+				constraints.gridy = 1;
+				center.add(buttons, constraints);
 
-				ArrayList<String> incomeTypes = new ArrayList<String>();
-				
-				for (Expense expense : userAtHand.getSpending()) {
-					incomeTypes.add(expense.getCategory());
-				}
-				
-				JComboBox<String> dropDownBox = new JComboBox<String>(incomeTypes.toArray(new String[0]));
-				dropDownBox.setPreferredSize(new Dimension(250,50));
-				gbc.gridx = 0;
-				gbc.gridy = 0;
-				gbc.insets = new Insets(10, 0, 10, 0);
-				center.add(dropDownBox, gbc);
-				
-				// Select button and action listener
-				JButton selectButton = new JButton("Generate Report");
-				selectButton.addActionListener(new ActionListener() {
+				JButton exportReport = new JButton("Export");
+				buttons.add(exportReport);
+
+				JButton filterButton = new JButton("Filter");
+				buttons.add(filterButton);
+
+				JButton closeButton = new JButton("Close");
+				buttons.add(closeButton);
+
+				ActionListener buttonActions = new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						frame.getContentPane().removeAll();
-						frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER));
-						frame.getContentPane().add(center);
-						center.removeAll();
-						center.setLayout(new GridBagLayout());
-						GridBagConstraints constraints = new GridBagConstraints();
-						constraints.gridx = 0;
-						constraints.gridy = 0;
-						center.add(generateFilteredExpenseTable((String) dropDownBox.getSelectedItem()), constraints);
-						JPanel buttons = new JPanel();
-						buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
-						constraints.gridy = 1;
-						center.add(buttons, constraints);
-						
-						JButton exportReport = new JButton("Export");
-						buttons.add(exportReport);
-						
-						JButton filterButton = new JButton("Filter");
-						buttons.add(filterButton);
-						
-						JButton closeButton = new JButton("Close");
-						buttons.add(closeButton);
-
-						ActionListener buttonActions = new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								if (e.getSource() == closeButton) {
-									frame.dispose();
-								}
-								if (e.getSource() == filterButton) {
-									printExpenseByType();
-									frame.dispose();
-								}
-								if (e.getSource() == exportReport) {
-									exportReport("Income Report");
-								}
-							}
-						};
-						
-						exportReport.addActionListener(buttonActions);
-						filterButton.addActionListener(buttonActions);
-						closeButton.addActionListener(buttonActions);
-						frame.repaint();
-						frame.revalidate();
-						frame.pack();
+						if (e.getSource() == closeButton) {
+							frame.dispose();
+						}
+						if (e.getSource() == filterButton) {
+							printExpenseByType();
+							frame.dispose();
+						}
+						if (e.getSource() == exportReport) {
+							exportReport("Income Report");
+						}
 					}
-				});
-				
-				gbc.gridy = 1;
-				center.add(selectButton, gbc);
+				};
 
-				// Adds components and sets frame visible
-				frame.add(center);
-				frame.setVisible(true);
-		
+				exportReport.addActionListener(buttonActions);
+				filterButton.addActionListener(buttonActions);
+				closeButton.addActionListener(buttonActions);
+				frame.repaint();
+				frame.revalidate();
+				frame.pack();
+			}
+		});
+
+		gbc.gridy = 1;
+		center.add(selectButton, gbc);
+
+		// Adds components and sets frame visible
+		frame.add(center);
+		frame.setVisible(true);
+
 	}
 	
-	public JScrollPane generateFilteredExpenseTable(String selectedExpenseSource) {
+	private JScrollPane generateFilteredExpenseTable(String selectedExpenseSource) {
 		String[] expenseTableColumnNames = {
 				"Category",
 				"Amount",
@@ -580,7 +584,7 @@ public class ExpenseCalculator implements Expenser {
 		try (FileWriter outputStream = new FileWriter(filePath + "/" + reportTitle + ".csv");
 				BufferedWriter outFS = new BufferedWriter(outputStream)) {
 
-			String reportContents = reportTitle + "\n";
+			String reportContents = "";
 			
 			switch (reportTitle) {
 			
@@ -602,7 +606,6 @@ public class ExpenseCalculator implements Expenser {
 				break;
 				
 			case "Expense Report":
-				reportContents += "Expenses\n";
 				reportContents += "category,amount,yearly_frequency\n";
 				for (Expense expense : userAtHand.getSpending()) {
 					reportContents += expense.getCategory() + "," + expense.getAmount() + ","
@@ -611,7 +614,6 @@ public class ExpenseCalculator implements Expenser {
 				break;
 				
 			case "Income Report":
-				reportContents += "Income\n";
 				reportContents += "source,amount,month\n";
 				for (Wage wage : userAtHand.getIncome()) {
 					reportContents += wage.getSource() + "," + wage.getAmount() + ","
@@ -641,13 +643,13 @@ public class ExpenseCalculator implements Expenser {
 
 	@Override
 	public boolean loadExpenseFile(String filePath) {
-		// TODO Auto-generated method stub
+		System.out.println("loadExpenseFile() not implemented!");
 		return false;
 	}
 
 	@Override
 	public boolean loadIncomeFile(String filePath) {
-		// TODO Auto-generated method stub
+		System.out.println("loadIncomeFile() not implemented!");
 		return false;
 	}
 
