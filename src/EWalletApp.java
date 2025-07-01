@@ -8,9 +8,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -67,8 +73,6 @@ public class EWalletApp {
             	   expenseCalculator.userAtHand = user;
             	   InitalizeReportScreen();
             	   jframe.dispose(); //destroy self now that new JFrame is here
-            	   //login, proceed to next screen
-            	   //I.E, initate new window and destroy old one
                }
             }
 				});
@@ -82,6 +86,46 @@ public class EWalletApp {
 		jframe.setTitle("E-Wallet App");
 		jframe.setDefaultCloseOperation(jframe.EXIT_ON_CLOSE);
 		jframe.setSize(400, 300);
+		
+		//Creating GUI stuff
+		JLabel incomeLabel = new JLabel("Add Income (per month)"); 
+		JLabel expenseLabel = new JLabel("Add Expense"); 
+		
+		JTextField incomeInput = new JTextField();
+		JTextField expenseInput = new JTextField();
+		
+		//Admittedly code taken from chatGPT, to prevent none numbers from being inputed
+		DocumentFilter numberFilter = new NumericFilter();
+		((AbstractDocument) incomeInput.getDocument()).setDocumentFilter(numberFilter);
+		((AbstractDocument) expenseInput.getDocument()).setDocumentFilter(numberFilter);
+		
+		
+		//BUTTONS DO NOT HAVE FUNCTIONALITY!!!! ADD ASAP!!!!!!
+		JButton confirmIncomeButton = new JButton("Add");
+		JButton confirmExpenseButton = new JButton("Add");
+		JButton reportButton = new JButton("Print an Expense Report");
+		
+		
+		//Panels, to organize page
+		JPanel incomePanel = new JPanel();
+		incomePanel.setLayout(new BoxLayout(incomePanel, BoxLayout.Y_AXIS));
+		JPanel expensePanel = new JPanel();
+		expensePanel.setLayout(new BoxLayout(expensePanel, BoxLayout.Y_AXIS));
+		
+		//Add features to GUI
+		incomePanel.add(incomeLabel);
+		incomePanel.add(incomeInput);
+		incomePanel.add(confirmIncomeButton);
+		
+		expensePanel.add(expenseLabel);
+		expensePanel.add(expenseInput);
+		expensePanel.add(confirmExpenseButton);
+		
+		jframe.add(incomePanel, BorderLayout.NORTH);
+		jframe.add(expensePanel, BorderLayout.CENTER);
+		jframe.add(reportButton, BorderLayout.SOUTH);
+		
+		//BUTTONS DO NOT HAVE FUNCTIONALITY!!!! ADD ASAP!!!!!!
 		
 		//Wrap up stuff
 		jframe.setVisible(true);
@@ -169,5 +213,25 @@ public class EWalletApp {
 		ExpenseCalculator expenseCalculator = new ExpenseCalculator(); //had to create here to get around static BS
 		InitalizeLoginScreen(expenseCalculator);
 	}
+	
+	
+	
+	//used to prevent User from putting letters into a number field
+	static class NumericFilter extends DocumentFilter {
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            if (string.matches("\\d+")) {
+                super.insertString(fb, offset, string, attr);
+            }
+        }
 
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            if (text.matches("\\d+")) {
+                super.replace(fb, offset, length, text, attrs);
+            }
+        }
+
+}
+	
 }
