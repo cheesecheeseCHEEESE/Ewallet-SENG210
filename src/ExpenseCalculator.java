@@ -1,8 +1,10 @@
 
 public class ExpenseCalculator implements Expenser {
 
+	public User userAtHand= null;
+	
 	@Override
-	public void addExpense(Expense Ex) {
+	public static void addExpense(Expense Ex) {
 		userAtHand.addExpense(Ex);
 	}
 

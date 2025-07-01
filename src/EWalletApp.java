@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -11,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 
@@ -20,36 +22,70 @@ public class EWalletApp {
 	
 	private ExpenseCalculator expenseCalculator = new ExpenseCalculator();
 	
-	public void createUser(String username, String password) {
-		
-		// When you finish logging in/changing user, set expenseCalculator.userAtHand to the created
-		
-		// user
-		//User newUser = new User(/*name and password*/);
-		//can't initalize a new user until User has a Constructor
+	public static void updateUserAtHand(User currentUser) 
+	{
+		//expenseCalculator.userAtHand = currentUser;
 	}
 	
-	private static void InitalizeJFrame() //called to create the GUI
+	
+	private static void InitalizeLoginScreen(ExpenseCalculator expenseCalculator) //called to create the GUI for Login Screen
+											//calculator referenced to work around static class
 	{
 		//Inital JFrame stuff
 		JFrame jframe = new JFrame();
 		jframe.setTitle("E-Wallet App");
 		jframe.setDefaultCloseOperation(jframe.EXIT_ON_CLOSE);
 		jframe.setSize(400, 300);
+		jframe.setLayout(new BorderLayout());
 		
 		//components for the GUI here
-		JTextField reportOutputArea = new JTextField("Lorum Ipsum");
+		JTextArea usernameInput = new JTextArea("Username (type here)");
+		JTextArea passwordInput = new JTextArea("Password (type here)");
+		JButton confirmLoginButton = new JButton("Login");
 		
 		
 		//adding all the components here
-		jframe.add(reportOutputArea);
+		jframe.add(usernameInput, BorderLayout.NORTH);
+		jframe.add(passwordInput, BorderLayout.CENTER);
+		jframe.add(confirmLoginButton, BorderLayout.SOUTH);
 		
 		
 		//"wrap up" stuff for the JFrame
-		jframe.pack();
+		//jframe.pack();
+		confirmLoginButton.addActionListener(new ActionListener(){
+					
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+               if(usernameInput.getText() == null || passwordInput.getText() == null || usernameInput.getText().isEmpty() || passwordInput.getText().isEmpty())
+               {
+            	   //Potentially display error message. Otherwise, do nothing. No login if no info
+               }
+               else
+               {
+            	   User user = new User(usernameInput.getText(), passwordInput.getText());
+            	   expenseCalculator.userAtHand = user;
+            	   InitalizeReportScreen();
+            	   jframe.dispose(); //destroy self now that new JFrame is here
+            	   //login, proceed to next screen
+            	   //I.E, initate new window and destroy old one
+               }
+            }
+				});
 		jframe.setVisible(true); //may move to Main for something if it becomes a problem
 	}
 	
+	private static void InitalizeReportScreen()
+	{
+		//inital Jframe stuff
+		JFrame jframe = new JFrame();
+		jframe.setTitle("E-Wallet App");
+		jframe.setDefaultCloseOperation(jframe.EXIT_ON_CLOSE);
+		jframe.setSize(400, 300);
+		
+		//Wrap up stuff
+		jframe.setVisible(true);
+	}
 	
 	// Used to select what kind of report to display (call this when the generate report button is 
 	// clicked
@@ -130,7 +166,8 @@ public class EWalletApp {
 
 	public static void main(String[] args)
 	{
-		InitalizeJFrame();
+		ExpenseCalculator expenseCalculator = new ExpenseCalculator(); //had to create here to get around static BS
+		InitalizeLoginScreen(expenseCalculator);
 	}
 
 }
