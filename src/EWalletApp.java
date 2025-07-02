@@ -28,12 +28,6 @@ public class EWalletApp {
 	
 	private ExpenseCalculator expenseCalculator = new ExpenseCalculator();
 	
-	public static void updateUserAtHand(User currentUser) 
-	{
-		//expenseCalculator.userAtHand = currentUser;
-	}
-	
-	
 	private static void InitalizeLoginScreen(ExpenseCalculator expenseCalculator) //called to create the GUI for Login Screen
 											//calculator referenced to work around static class
 	{
@@ -71,15 +65,15 @@ public class EWalletApp {
                {
             	   User user = new User(usernameInput.getText(), passwordInput.getText());
             	   expenseCalculator.userAtHand = user;
-            	   InitalizeReportScreen();
+            	   InitalizeReportScreen(expenseCalculator);
             	   jframe.dispose(); //destroy self now that new JFrame is here
                }
             }
 				});
 		jframe.setVisible(true); //may move to Main for something if it becomes a problem
 	}
-	
-	private static void InitalizeReportScreen()
+											//once again included to work around static class
+	private static void InitalizeReportScreen(ExpenseCalculator expenseCalculator)
 	{
 		//inital Jframe stuff
 		JFrame jframe = new JFrame();
@@ -106,6 +100,59 @@ public class EWalletApp {
 		JButton reportButton = new JButton("Print an Expense Report");
 		
 		
+		//action listeners, I.E button functionality
+		
+		confirmIncomeButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(incomeInput.getText() == null || incomeInput.getText().isEmpty())
+				{
+					String newIncomeText = incomeInput.getText();
+					double newIncomeAmount = Double.parseDouble(newIncomeText);
+					//defaults to "Unspecified" because there currently isn't a way TO specify
+					Wage newWage = new Wage("Unspecified", newIncomeAmount);
+					expenseCalculator.userAtHand.addIncome(newWage);
+					
+					//print Message showing it went through?
+				}
+				
+			}
+			
+		});
+		
+		confirmExpenseButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(expenseInput.getText() == null || expenseInput.getText().isEmpty())
+				{
+					String newExpenseText = expenseInput.getText();
+					double newExpenseAmount = Double.parseDouble(newExpenseText);
+					//defaults to "Unspecified" because there currently isn't a way TO specify
+					Expense expense = new Expense("Unspecified", newExpenseAmount);
+					expenseCalculator.userAtHand.addExpense(expense);
+					
+					//print Message showing it went through?
+				}
+			}
+			
+		});
+		
+		reportButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				//see selectReport
+				selectReport();
+			}
+			
+		});
+		
+		
 		//Panels, to organize page
 		JPanel incomePanel = new JPanel();
 		incomePanel.setLayout(new BoxLayout(incomePanel, BoxLayout.Y_AXIS));
@@ -125,14 +172,13 @@ public class EWalletApp {
 		jframe.add(expensePanel, BorderLayout.CENTER);
 		jframe.add(reportButton, BorderLayout.SOUTH);
 		
-		//BUTTONS DO NOT HAVE FUNCTIONALITY!!!! ADD ASAP!!!!!!
 		
 		//Wrap up stuff
 		jframe.setVisible(true);
 	}
 	
-	// Used to select what kind of report to display (call this when the generate report button is 
-	// clicked
+
+	//currently doesn't show any report, but otherwise works
 	private static void selectReport() {
 		
 		// Initial frame settings
