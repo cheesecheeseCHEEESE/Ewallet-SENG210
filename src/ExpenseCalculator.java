@@ -25,8 +25,10 @@ public class ExpenseCalculator implements Expenser {
 	
 	public static User userAtHand = null;
 
+	public User userAtHand= null;
+	
 	@Override
-	public void addExpense(Expense Ex) {
+	public static void addExpense(Expense Ex) {
 		userAtHand.addExpense(Ex);
 	}
 
@@ -655,8 +657,24 @@ public class ExpenseCalculator implements Expenser {
 
 	@Override
 	public int whenCanIBuy(String itemname, double price) {
-		// TODO Auto-generated method stub
-		return 0;
+    		if (userAtHand == null) {
+        	System.out.println("No user loaded.");
+        return -1;
+    }
+
+   	 updateMonthlySavings();
+
+   		 int monthlySavings = userAtHand.monthlySavings;
+
+    	if (monthlySavings <= 0) {
+        System.out.println("You are not saving any money. Try reducing expenses or increasing income.");
+        return -1;
+    }
+
+   	 int months = (int) Math.ceil(price / monthlySavings);
+
+   	 System.out.println("You can afford \"" + itemname + "\" in " + months + " month(s) based on your current monthly savings.");
+   	 return months;
 	}
 
 	@Override

@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -7,11 +8,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -23,16 +31,14 @@ public class EWalletApp {
 	
 	private static ExpenseCalculator expenseCalculator = new ExpenseCalculator();
 	
-	public void createUser(String username, String password) {
-		
-		// When you finish logging in/changing user, set expenseCalculator.userAtHand to the created
-		
-		// user
-		//User newUser = new User(/*name and password*/);
-		//can't initalize a new user until User has a Constructor
+	public static void updateUserAtHand(User currentUser) 
+	{
+		//expenseCalculator.userAtHand = currentUser;
 	}
 	
-	private static void InitalizeJFrame() //called to create the GUI
+	
+	private static void InitalizeLoginScreen(ExpenseCalculator expenseCalculator) //called to create the GUI for Login Screen
+											//calculator referenced to work around static class
 	{
 		// Inital JFrame stuff
 		JFrame jframe = new JFrame();
@@ -40,9 +46,13 @@ public class EWalletApp {
 		jframe.setDefaultCloseOperation(jframe.EXIT_ON_CLOSE);
 		jframe.setLayout(new FlowLayout());
 		jframe.setSize(400, 300);
+		jframe.setLayout(new BorderLayout());
 		
-		// components for the GUI here
-		JTextField reportOutputArea = new JTextField("Lorum Ipsum");
+
+		//components for the GUI here
+		JTextArea usernameInput = new JTextArea("Username (type here)");
+		JTextArea passwordInput = new JTextArea("Password (type here)");
+		JButton confirmLoginButton = new JButton("Login");
 		
 		// Button to open generate report dialog (you can move this wherever)
 		JButton generateReportButton = new JButton("Generate Report");
@@ -52,15 +62,86 @@ public class EWalletApp {
 		importReportButton.addActionListener(event -> importReport());
 		
 		//adding all the components here
-		jframe.add(reportOutputArea);
-		jframe.add(generateReportButton);
-		jframe.add(importReportButton);
+
+		jframe.add(usernameInput, BorderLayout.NORTH);
+		jframe.add(passwordInput, BorderLayout.CENTER);
+		jframe.add(confirmLoginButton, BorderLayout.SOUTH);
+		
 		
 		//"wrap up" stuff for the JFrame
-		jframe.pack();
+		//jframe.pack();
+		confirmLoginButton.addActionListener(new ActionListener(){
+					
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+               if(usernameInput.getText() == null || passwordInput.getText() == null || usernameInput.getText().isEmpty() || passwordInput.getText().isEmpty())
+               {
+            	   //Potentially display error message. Otherwise, do nothing. No login if no info
+               }
+               else
+               {
+            	   User user = new User(usernameInput.getText(), passwordInput.getText());
+            	   expenseCalculator.userAtHand = user;
+            	   InitalizeReportScreen();
+            	   jframe.dispose(); //destroy self now that new JFrame is here
+               }
+            }
+				});
 		jframe.setVisible(true); //may move to Main for something if it becomes a problem
 	}
 	
+	private static void InitalizeReportScreen()
+	{
+		//inital Jframe stuff
+		JFrame jframe = new JFrame();
+		jframe.setTitle("E-Wallet App");
+		jframe.setDefaultCloseOperation(jframe.EXIT_ON_CLOSE);
+		jframe.setSize(400, 300);
+		
+		//Creating GUI stuff
+		JLabel incomeLabel = new JLabel("Add Income (per month)"); 
+		JLabel expenseLabel = new JLabel("Add Expense"); 
+		
+		JTextField incomeInput = new JTextField();
+		JTextField expenseInput = new JTextField();
+		
+		//Admittedly code taken from chatGPT, to prevent none numbers from being inputed
+		DocumentFilter numberFilter = new NumericFilter();
+		((AbstractDocument) incomeInput.getDocument()).setDocumentFilter(numberFilter);
+		((AbstractDocument) expenseInput.getDocument()).setDocumentFilter(numberFilter);
+		
+		
+		//BUTTONS DO NOT HAVE FUNCTIONALITY!!!! ADD ASAP!!!!!!
+		JButton confirmIncomeButton = new JButton("Add");
+		JButton confirmExpenseButton = new JButton("Add");
+		JButton reportButton = new JButton("Print an Expense Report");
+		
+		
+		//Panels, to organize page
+		JPanel incomePanel = new JPanel();
+		incomePanel.setLayout(new BoxLayout(incomePanel, BoxLayout.Y_AXIS));
+		JPanel expensePanel = new JPanel();
+		expensePanel.setLayout(new BoxLayout(expensePanel, BoxLayout.Y_AXIS));
+		
+		//Add features to GUI
+		incomePanel.add(incomeLabel);
+		incomePanel.add(incomeInput);
+		incomePanel.add(confirmIncomeButton);
+		
+		expensePanel.add(expenseLabel);
+		expensePanel.add(expenseInput);
+		expensePanel.add(confirmExpenseButton);
+		
+		jframe.add(incomePanel, BorderLayout.NORTH);
+		jframe.add(expensePanel, BorderLayout.CENTER);
+		jframe.add(reportButton, BorderLayout.SOUTH);
+		
+		//BUTTONS DO NOT HAVE FUNCTIONALITY!!!! ADD ASAP!!!!!!
+		
+		//Wrap up stuff
+		jframe.setVisible(true);
+	}
 	
 	private static void importReport() {
 		
@@ -170,11 +251,29 @@ public class EWalletApp {
 
 	public static void main(String[] args)
 	{
-		InitalizeJFrame();
-		
-		// Here for debugging purposes
-		createTestUser();
-		
+		ExpenseCalculator expenseCalculator = new ExpenseCalculator(); //had to create here to get around static BS
+		InitalizeLoginScreen(expenseCalculator);
+    createTestUser();
 	}
+	
+	
+	
+	//used to prevent User from putting letters into a number field
+	static class NumericFilter extends DocumentFilter {
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            if (string.matches("\\d+")) {
+                super.insertString(fb, offset, string, attr);
+            }
+        }
 
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            if (text.matches("\\d+")) {
+                super.replace(fb, offset, length, text, attrs);
+            }
+        }
+
+}
+	
 }
