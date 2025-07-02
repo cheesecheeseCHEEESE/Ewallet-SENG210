@@ -14,13 +14,17 @@ public class User {
 	public User(String username, String password) {
         this.username = username;
         this.pwd = password;
-        this.income = new ArrayList<>();
-        this.spending = new ArrayList<>();
+        this.income = new ArrayList<Wage>();
+        this.spending = new ArrayList<Expense>();
         this.currencyRates = new ArrayList<>();
         this.balance = 0.0;
         this.monthlySavings = 0.0;
     }
 
+	public User() {
+		
+	}
+	
     public void addExpense(Expense Ex) {
         spending.add(Ex);
     }
