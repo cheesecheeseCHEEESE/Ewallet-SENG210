@@ -25,10 +25,9 @@ public class ExpenseCalculator implements Expenser {
 	
 	public static User userAtHand = null;
 
-	public User userAtHand= null;
 	
 	@Override
-	public static void addExpense(Expense Ex) {
+	public void addExpense(Expense Ex) {
 		userAtHand.addExpense(Ex);
 	}
 
@@ -40,8 +39,8 @@ public class ExpenseCalculator implements Expenser {
 	@Override
 	public void printFullReport() {
 		JFrame frame = new JFrame("Full Report");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(300, 300);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setSize(450, 350);
 		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.setVisible(true);
 		
@@ -96,17 +95,14 @@ public class ExpenseCalculator implements Expenser {
 		closeButton.addActionListener(buttonActions);
 		
 		frame.add(center);
-		   
-		frame.pack();
-		
 		
 	}
 
 	@Override
 	public void printExpenseReport() {
 		JFrame frame = new JFrame("Expense Report");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(300, 300);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setSize(450, 350);
 		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.setVisible(true);
 		
@@ -211,8 +207,8 @@ public class ExpenseCalculator implements Expenser {
 	@Override
 	public void printIncomeReport() {
 		JFrame frame = new JFrame("Income Report");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(300, 300);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setSize(450, 350);
 		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.setVisible(true);
 		
@@ -662,9 +658,9 @@ public class ExpenseCalculator implements Expenser {
         return -1;
     }
 
-   	 updateMonthlySavings();
+   	updateMonthlySavings();
 
-   		 int monthlySavings = userAtHand.monthlySavings;
+    double monthlySavings = userAtHand.monthlySavings;
 
     	if (monthlySavings <= 0) {
         System.out.println("You are not saving any money. Try reducing expenses or increasing income.");

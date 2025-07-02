@@ -31,6 +31,8 @@ public class EWalletApp {
 	
 	private static ExpenseCalculator expenseCalculator = new ExpenseCalculator();
 	
+	private static User currUser = new User();
+	
 	public static void updateUserAtHand(User currentUser) 
 	{
 		//expenseCalculator.userAtHand = currentUser;
@@ -54,12 +56,6 @@ public class EWalletApp {
 		JTextArea passwordInput = new JTextArea("Password (type here)");
 		JButton confirmLoginButton = new JButton("Login");
 		
-		// Button to open generate report dialog (you can move this wherever)
-		JButton generateReportButton = new JButton("Generate Report");
-		generateReportButton.addActionListener(event -> selectReport());
-		
-		JButton importReportButton = new JButton("Import Report");
-		importReportButton.addActionListener(event -> importReport());
 		
 		//adding all the components here
 
@@ -115,7 +111,14 @@ public class EWalletApp {
 		//BUTTONS DO NOT HAVE FUNCTIONALITY!!!! ADD ASAP!!!!!!
 		JButton confirmIncomeButton = new JButton("Add");
 		JButton confirmExpenseButton = new JButton("Add");
-		JButton reportButton = new JButton("Print an Expense Report");
+		// JButton reportButton = new JButton("Print an Expense Report");
+		
+		// Button to open generate report dialog (you can move this wherever)
+		JButton generateReportButton = new JButton("Generate Report");
+		generateReportButton.addActionListener(event -> selectReport());
+				
+		JButton importReportButton = new JButton("Import Report");
+		importReportButton.addActionListener(event -> importReport());
 		
 		
 		//Panels, to organize page
@@ -123,6 +126,8 @@ public class EWalletApp {
 		incomePanel.setLayout(new BoxLayout(incomePanel, BoxLayout.Y_AXIS));
 		JPanel expensePanel = new JPanel();
 		expensePanel.setLayout(new BoxLayout(expensePanel, BoxLayout.Y_AXIS));
+		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setLayout(new BorderLayout());
 		
 		//Add features to GUI
 		incomePanel.add(incomeLabel);
@@ -133,9 +138,12 @@ public class EWalletApp {
 		expensePanel.add(expenseInput);
 		expensePanel.add(confirmExpenseButton);
 		
+		buttonsPanel.add(generateReportButton, BorderLayout.NORTH);
+		buttonsPanel.add(importReportButton, BorderLayout.SOUTH);
+		
 		jframe.add(incomePanel, BorderLayout.NORTH);
 		jframe.add(expensePanel, BorderLayout.CENTER);
-		jframe.add(reportButton, BorderLayout.SOUTH);
+		jframe.add(buttonsPanel, BorderLayout.SOUTH);
 		
 		//BUTTONS DO NOT HAVE FUNCTIONALITY!!!! ADD ASAP!!!!!!
 		
@@ -178,6 +186,17 @@ public class EWalletApp {
 
 	// Used to select what kind of report to display 
 	private static void selectReport() {
+		
+		// If the current user doesn't have data, uses a test user (this is mostly in case
+		// expense and income adding isn't implemented in time)
+		ExpenseCalculator.userAtHand = currUser;
+		
+		if (ExpenseCalculator.userAtHand.getIncome() == null && 
+				ExpenseCalculator.userAtHand.getSpending() == null) {
+			
+			createTestUser();
+			
+		}
 		
 		// Initial frame settings
 		JFrame frame = new JFrame("Select Report Type:");
@@ -253,7 +272,6 @@ public class EWalletApp {
 	{
 		ExpenseCalculator expenseCalculator = new ExpenseCalculator(); //had to create here to get around static BS
 		InitalizeLoginScreen(expenseCalculator);
-    createTestUser();
 	}
 	
 	

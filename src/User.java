@@ -21,6 +21,10 @@ public class User {
         this.monthlySavings = 0.0;
     }
 
+	public User() {
+		
+	}
+	
     public void addExpense(Expense Ex) {
         spending.add(Ex);
     }
