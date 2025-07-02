@@ -15,18 +15,21 @@ import javax.swing.text.BadLocationException;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class EWalletApp {
+	
 	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface 
 	private ArrayList<User> allData;
 	
-	private ExpenseCalculator expenseCalculator = new ExpenseCalculator();
+	private static ExpenseCalculator expenseCalculator = new ExpenseCalculator();
 	
 	public static void updateUserAtHand(User currentUser) 
 	{
@@ -37,20 +40,29 @@ public class EWalletApp {
 	private static void InitalizeLoginScreen(ExpenseCalculator expenseCalculator) //called to create the GUI for Login Screen
 											//calculator referenced to work around static class
 	{
-		//Inital JFrame stuff
+		// Inital JFrame stuff
 		JFrame jframe = new JFrame();
 		jframe.setTitle("E-Wallet App");
 		jframe.setDefaultCloseOperation(jframe.EXIT_ON_CLOSE);
+		jframe.setLayout(new FlowLayout());
 		jframe.setSize(400, 300);
 		jframe.setLayout(new BorderLayout());
 		
+
 		//components for the GUI here
 		JTextArea usernameInput = new JTextArea("Username (type here)");
 		JTextArea passwordInput = new JTextArea("Password (type here)");
 		JButton confirmLoginButton = new JButton("Login");
 		
+		// Button to open generate report dialog (you can move this wherever)
+		JButton generateReportButton = new JButton("Generate Report");
+		generateReportButton.addActionListener(event -> selectReport());
+		
+		JButton importReportButton = new JButton("Import Report");
+		importReportButton.addActionListener(event -> importReport());
 		
 		//adding all the components here
+
 		jframe.add(usernameInput, BorderLayout.NORTH);
 		jframe.add(passwordInput, BorderLayout.CENTER);
 		jframe.add(confirmLoginButton, BorderLayout.SOUTH);
@@ -131,8 +143,40 @@ public class EWalletApp {
 		jframe.setVisible(true);
 	}
 	
-	// Used to select what kind of report to display (call this when the generate report button is 
-	// clicked
+	private static void importReport() {
+		
+		// File chooser to choose what file to import
+		JFileChooser fileChooser = new JFileChooser();
+		String filePath = "";
+		String reportType = "";
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Comma-separated value files (.csv)", "csv");
+		fileChooser.setFileFilter(filter);
+		int returnVal = fileChooser.showSaveDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			filePath = fileChooser.getSelectedFile().toString();
+		}
+		
+		// Gets path and checks report type
+		filePath = fileChooser.getSelectedFile().getPath();
+		
+		if (fileChooser.getSelectedFile().getName().toLowerCase().contains("expense")) {
+			reportType = "Expense";
+		}
+		else if (fileChooser.getSelectedFile().getName().toLowerCase().contains("income")) {
+			reportType = "Income";
+		}
+		
+		// Loads file
+		if (reportType == "Expense") {
+			expenseCalculator.loadExpenseFile(filePath);
+		}
+		else if (reportType == "Income") {
+			expenseCalculator.loadIncomeFile(filePath);
+		}
+	}
+
+	// Used to select what kind of report to display 
 	private static void selectReport() {
 		
 		// Initial frame settings
@@ -167,17 +211,17 @@ public class EWalletApp {
 
 				case "Full Report":
 					frame.dispose();
-					showFullReport();
+					expenseCalculator.printFullReport();
 					break;
 
 				case "Income Report":
 					frame.dispose();
-					showIncomeReport();
+					expenseCalculator.printIncomeReport();
 					break;
 
 				case "Expense Report":
 					frame.dispose();
-					showExpenseReport();
+					expenseCalculator.printExpenseReport();
 					break;
 				}
 
@@ -192,26 +236,24 @@ public class EWalletApp {
 		
 	}
 	
+	private static void createTestUser() {
+		ExpenseCalculator.userAtHand = new User("Test User", "Password1");
+		ExpenseCalculator.userAtHand.addIncome(new Wage("Walmart", 400.00, "May"));
+		ExpenseCalculator.userAtHand.addIncome(new Wage("Walmart", 700.00, "June"));
+		ExpenseCalculator.userAtHand.addIncome(new Wage("Erbert and Gerbert's", 500.00, "May"));
+		ExpenseCalculator.userAtHand.addIncome(new Wage("Side hustle", 10.00, "May"));
+		ExpenseCalculator.userAtHand.addIncome(new Wage("Side hustle", 40.00, "June"));
+		ExpenseCalculator.userAtHand.addExpense(new Expense("Shopping", 40.00, 1));
+		ExpenseCalculator.userAtHand.addExpense(new Expense("Subscription", 12.00, 12));
+		ExpenseCalculator.userAtHand.addExpense(new Expense("Groceries", 100.00, 24));
+	}
 	
-	protected static void showExpenseReport() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	protected static void showIncomeReport() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	protected static void showFullReport() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public static void main(String[] args)
 	{
 		ExpenseCalculator expenseCalculator = new ExpenseCalculator(); //had to create here to get around static BS
 		InitalizeLoginScreen(expenseCalculator);
+    createTestUser();
 	}
 	
 	
