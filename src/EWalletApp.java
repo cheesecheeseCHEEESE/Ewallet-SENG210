@@ -34,30 +34,15 @@ public class EWalletApp {
     private static ExpenseCalculator expenseCalculator = new ExpenseCalculator();
     private static User currUser = new User();
 
-    public static void updateUserAtHand(User currentUser) {
-        // expenseCalculator.userAtHand = currentUser;
-    }
-
 
     public static void main(String[] args) {
         ExpenseCalculator expenseCalculator = new ExpenseCalculator(); // had to create here to get around static BS
         InitalizeLoginScreen(expenseCalculator);
     }
 	
-<<<<<<< HEAD
-	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface 
-	private ArrayList<User> allData;
-	
-	private static ExpenseCalculator expenseCalculator = new ExpenseCalculator();
-	
-	private static User currUser = new User();
-	
-	private static void InitalizeLoginScreen(ExpenseCalculator expenseCalculator) //called to create the GUI for Login Screen
-											//calculator referenced to work around static class
-	{
-=======
+
 	private static void InitalizeLoginScreen(ExpenseCalculator expenseCalculator) {
->>>>>>> master
+
 		// Inital JFrame stuff
 		JFrame jframe = new JFrame("E-Wallet App - Login");
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -98,10 +83,10 @@ public class EWalletApp {
 				String username = usernameInput.getText().trim();
 				String password = new String(passwordInput.getPassword()).trim();
 
-<<<<<<< HEAD
+
                if(usernameInput.getText() == null || passwordInput.getText() == null || usernameInput.getText().isEmpty() || passwordInput.getText().isEmpty())
                {
-            	   //Potentially display error message. Otherwise, do nothing. No login if no info
+            	   feedbackLabel.setText("Please enter both username and password.");
                }
                else
                {
@@ -112,22 +97,11 @@ public class EWalletApp {
                }
             }
 				});
-		jframe.setVisible(true); //may move to Main for something if it becomes a problem
-=======
-				if (username.isEmpty() || password.isEmpty()) {
-					feedbackLabel.setText("Please enter both username and password.");
-				} else {
-					User user = new User(username, password);
-					ExpenseCalculator.userAtHand = user;
-					jframe.dispose();
-					InitalizeReportScreen();
-				}
-			}
-		});
+		;
 		
 		jframe.add(panel);
         jframe.setVisible(true);
->>>>>>> master
+
 	}
 											//once again included to work around static class
 	private static void InitalizeReportScreen(ExpenseCalculator expenseCalculator)
@@ -240,7 +214,8 @@ public class EWalletApp {
 			
 		});
 		
-		reportButton.addActionListener(new ActionListener(){
+		//may need deleting if obsolete
+		/*reportButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) 
@@ -249,7 +224,7 @@ public class EWalletApp {
 				selectReport();
 			}
 			
-		});
+		});*/
 		
 		
 		//Panels, to organize page
@@ -283,10 +258,10 @@ public class EWalletApp {
 		jframe.setVisible(true);
 	}
 	
-<<<<<<< HEAD
+
 
 	//currently doesn't show any report, but otherwise works
-=======
+
 	private static void importReport() {
 		
 		// File chooser to choose what file to import
@@ -321,7 +296,7 @@ public class EWalletApp {
 	}
 
 	// Used to select what kind of report to display 
->>>>>>> master
+
 	private static void selectReport() {
 		
 		// If the current user doesn't have data, uses a test user (this is mostly in case
