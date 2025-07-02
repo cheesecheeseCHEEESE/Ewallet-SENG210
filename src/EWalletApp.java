@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Timer;
 
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.AbstractDocument;
@@ -88,13 +89,16 @@ public class EWalletApp {
 		JTextField incomeInput = new JTextField();
 		JTextField expenseInput = new JTextField();
 		
+		//little messages that show up under the input areas to show it went through
+		JLabel incomeConfirmation = new JLabel("");
+		JLabel expenseConfirmation = new JLabel("");
+		
 		//Admittedly code taken from chatGPT, to prevent none numbers from being inputed
 		DocumentFilter numberFilter = new NumericFilter();
 		((AbstractDocument) incomeInput.getDocument()).setDocumentFilter(numberFilter);
 		((AbstractDocument) expenseInput.getDocument()).setDocumentFilter(numberFilter);
 		
 		
-		//BUTTONS DO NOT HAVE FUNCTIONALITY!!!! ADD ASAP!!!!!!
 		JButton confirmIncomeButton = new JButton("Add");
 		JButton confirmExpenseButton = new JButton("Add");
 		JButton reportButton = new JButton("Print an Expense Report");
@@ -109,13 +113,30 @@ public class EWalletApp {
 			{
 				if(incomeInput.getText() == null || incomeInput.getText().isEmpty())
 				{
+					incomeConfirmation.setText("Please insert a number, it can't be blank");
+					
+					//Functionally, resets the text to be blank after 3 seconds
+					javax.swing.Timer time = new javax.swing.Timer(3000, event -> incomeConfirmation.setText(""));
+					time.setRepeats(false);
+					time.start();
+				}
+				else
+				{
 					String newIncomeText = incomeInput.getText();
 					double newIncomeAmount = Double.parseDouble(newIncomeText);
 					//defaults to "Unspecified" because there currently isn't a way TO specify
 					Wage newWage = new Wage("Unspecified", newIncomeAmount);
 					expenseCalculator.userAtHand.addIncome(newWage);
 					
-					//print Message showing it went through?
+					incomeConfirmation.setText("New Income Submitted!");
+					
+					//yes Copy+Paste from GPT again, kinda works
+					//would be better if there was 1 timer shared, hence why its a little funky, but eh this works
+					//Functionally, resets the text to be blank after 3 seconds
+					javax.swing.Timer time = new javax.swing.Timer(3000, event -> incomeConfirmation.setText(""));
+					time.setRepeats(false);
+					time.start();
+					
 				}
 				
 			}
@@ -129,13 +150,28 @@ public class EWalletApp {
 			{
 				if(expenseInput.getText() == null || expenseInput.getText().isEmpty())
 				{
+					//potentially display error message
+					expenseConfirmation.setText("Please insert a number, it can't be blank");
+					
+					//Functionally, resets the text to be blank after 3 seconds
+					javax.swing.Timer time = new javax.swing.Timer(3000, event -> expenseConfirmation.setText(""));
+					time.setRepeats(false);
+					time.start();
+				}
+				else
+				{
 					String newExpenseText = expenseInput.getText();
 					double newExpenseAmount = Double.parseDouble(newExpenseText);
 					//defaults to "Unspecified" because there currently isn't a way TO specify
 					Expense expense = new Expense("Unspecified", newExpenseAmount);
 					expenseCalculator.userAtHand.addExpense(expense);
 					
-					//print Message showing it went through?
+					expenseConfirmation.setText("New Expense Submitted!");
+					
+					//Functionally, resets the text to be blank after 3 seconds
+					javax.swing.Timer time = new javax.swing.Timer(3000, event -> expenseConfirmation.setText(""));
+					time.setRepeats(false);
+					time.start();
 				}
 			}
 			
@@ -163,10 +199,12 @@ public class EWalletApp {
 		incomePanel.add(incomeLabel);
 		incomePanel.add(incomeInput);
 		incomePanel.add(confirmIncomeButton);
+		incomePanel.add(incomeConfirmation);
 		
 		expensePanel.add(expenseLabel);
 		expensePanel.add(expenseInput);
 		expensePanel.add(confirmExpenseButton);
+		expensePanel.add(expenseConfirmation);
 		
 		jframe.add(incomePanel, BorderLayout.NORTH);
 		jframe.add(expensePanel, BorderLayout.CENTER);
